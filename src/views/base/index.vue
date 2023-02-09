@@ -4,6 +4,9 @@
         <p>{{double}}</p>
         <button @click="addOne">button</button>
         <test-tsx main-title="test tsx" />
+        <p class="test-ellipsis ellipsis">
+            hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh
+        </p>
     </div>
 </template>
 
@@ -22,12 +25,17 @@ const addOne = () => count.value++
     height: 200px;
     justify-content: center;
     align-items: center;
+
     p, button {
         width: 200px;
         height: 50px;
         line-height: 50px;
         text-align: center;
         margin-bottom: 10px;
+    }
+    
+    .test-ellipsis {
+        max-width: 30px;
     }
 }
 </style>

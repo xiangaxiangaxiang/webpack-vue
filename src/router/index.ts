@@ -2,13 +2,19 @@ import {createRouter, createWebHistory, RouteRecordRaw} from 'vue-router'
 
 export const RouterName =  {
     base: 'base',
-} as const;
+    piniaDemo: 'pinia demo'
+} as const
 
 const routes: RouteRecordRaw[] = [
     {
         name: RouterName.base,
         path: '/base',
-        component: () => import('../views/base/index.vue')
+        component: () => import(/* webpackChunkName: 'base' */'../views/base/index.vue')
+    },
+    {
+        name: RouterName.piniaDemo,
+        path: '/pinia-demo',
+        component: () => import(/* webpackChunkName: 'pinia-demo' */'../views/pinia-demo/index.vue')
     },
     {
         path: '/',
@@ -23,6 +29,6 @@ export const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-    console.log(to, from);
+    console.log(to, from)
     next()
 })

@@ -18,9 +18,9 @@
 </template>
 
 <script lang="ts" setup>
-import { RouterName } from './router';
-import { useRoute, useRouter } from 'vue-router';
-import { computed } from 'vue';
+import { RouterName } from './router'
+import { useRoute, useRouter } from 'vue-router'
+import { computed } from 'vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -44,23 +44,27 @@ const isActive = (name: string) => name === activeRoute.value
     width: 100%;
     height: 100%;
     display: flex;
+
     .nav {
         width: 200px;
         height: 100%;
         border-right: 1px solid var(--border-color);
+        
         .router-item {
-            line-height: 50px;
-            color: var(--black-text);
+            line-height: 50px; 
+            color: var(--black-text);   
             font-weight: bold;
             text-indent: 16px;
             cursor: pointer;
             border-radius: 4px;
+
             &.active {
                 color: var(--blue-text);
                 background-color: var(--blue-bg);
             }
         }
     }
+    
     .view-content {
         flex: 1;
         height: 100%;

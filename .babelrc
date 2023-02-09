@@ -4,8 +4,6 @@
         [
             "@babel/preset-typescript",
             {
-                "jsxPragma": "preserve",
-                "jsxPragmaFrag": "h",
                 "isTSX": true,
                 "allExtensions": true
             }

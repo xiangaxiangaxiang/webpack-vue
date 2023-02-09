@@ -1,22 +1,25 @@
 // Generated using webpack-cli https://github.com/webpack/webpack-cli
 const VueLoaderPlugin = require('vue-loader').VueLoaderPlugin
-const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const WorkboxWebpackPlugin = require('workbox-webpack-plugin');
-const { resolve } = require('path');
+const path = require('path')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const WorkboxWebpackPlugin = require('workbox-webpack-plugin')
+const ESLintPlugin = require('eslint-webpack-plugin')
+const { resolve } = require('path')
 
-const isProduction = process.env.NODE_ENV == 'production';
+const isProduction = process.env.NODE_ENV == 'production'
 
-const stylesHandler = isProduction ? MiniCssExtractPlugin.loader : 'style-loader';
+const stylesHandler = isProduction ? MiniCssExtractPlugin.loader : 'style-loader'
 
 const config = {
     entry: './src/main.ts',
     output: {
         path: path.resolve(__dirname, 'dist'),
+        filename: '[name].[hash:8].js',
+        clean: true // 打包之前清空输出目录
     },
     devServer: {
-        open: true,
+        open: true, // 自动打开浏览器
         host: 'localhost',
         historyApiFallback: true
     },
@@ -24,10 +27,8 @@ const config = {
         new HtmlWebpackPlugin({
             template: 'index.html',
         }),
-        new VueLoaderPlugin()
-
-        // Add your plugins here
-        // Learn more about plugins from https://webpack.js.org/configuration/plugins/
+        new VueLoaderPlugin(), // 必须要加这个才能解析SFC
+        new ESLintPlugin()
     ],
     module: {
         rules: [
@@ -56,10 +57,7 @@ const config = {
                 test: /\.(eot|svg|ttf|woff|woff2|png|jpg|gif)$/i,
                 type: 'asset',
             },
-
-            // Add your rules for custom modules here
-            // Learn more about loaders from https://webpack.js.org/loaders/
-            ],
+        ],
     },
     resolve: {
         alias: {
@@ -67,21 +65,21 @@ const config = {
         },
         extensions: ['.tsx', '.ts', '.jsx', '.js', '...'],
     },
-};
+}
 
 module.exports = () => {
     if (isProduction) {
-        config.mode = 'production';
+        config.mode = 'production'
 
-        const plugins = config.plugins ?? [];
+        const plugins = config.plugins ?? []
 
-        plugins.push(new MiniCssExtractPlugin());
-        plugins.push(new WorkboxWebpackPlugin.GenerateSW());
+        plugins.push(new MiniCssExtractPlugin())
+        plugins.push(new WorkboxWebpackPlugin.GenerateSW())
 
         config.plugins = plugins
 
     } else {
-        config.mode = 'development';
+        config.mode = 'development'
     }
-    return config;
-};
+    return config
+}
