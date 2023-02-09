@@ -33,7 +33,7 @@ const addOne = () => count.value++
         text-align: center;
         margin-bottom: 10px;
     }
-    
+
     .test-ellipsis {
         max-width: 30px;
     }
