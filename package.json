@@ -12,7 +12,7 @@
         "eslint:fix": "npx eslint ./src --ext .vue,.js,.ts --fix",
         "stylelint": "npx stylelint \"src/**/*.vue\" \"src/**/*.less\"",
         "stylelint:fix": "npx stylelint --fix \"src/**/*.vue\" \"src/**/*.less\"",
-        "lint-staged": "lint-staged",
+        "pre-commit": "lint-staged",
         "prepare": "husky install"
     },
     "devDependencies": {
