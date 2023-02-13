@@ -11,11 +11,20 @@ const isProduction = process.env.NODE_ENV == 'production'
 
 const stylesHandler = isProduction ? MiniCssExtractPlugin.loader : 'style-loader'
 
+// 打包后文件路径和文件名
+const JS_FILE_NAME = 'js/[name].[fullhash].js'
+const CSS_FILE_NAME = 'css/[name].[fullhash].css'
+const IMG_FILE_NAME = 'img/[name].[fullhash].[ext]'
+const FONT_FILE_NAME = 'font/[name].[fullhash].[ext]'
+const ASSET_FILE_NAME = 'asset/[name].[fullhash].[ext]'
+
+const RESOURCE_LIMIT = 10 * 1024 // url-loader所需参数，小于10K的文件资源转为base64
+
 const config = {
     entry: './src/main.ts',
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: '[name].[hash:8].js',
+        filename: JS_FILE_NAME,
         clean: true // 打包之前清空输出目录
     },
     devServer: {
@@ -54,8 +63,23 @@ const config = {
                 use: [stylesHandler, 'css-loader', 'postcss-loader'],
             },
             {
-                test: /\.(eot|svg|ttf|woff|woff2|png|jpg|gif)$/i,
-                type: 'asset',
+                test: /\.(png|jpe?g|gif|svg|bmp)(\?.*)?$/,
+                type: 'asset', // 替代webpack5之前的url-loader
+                generator: {
+                    filename: IMG_FILE_NAME,
+                },
+                parser: {
+                    dataUrlCondition: {
+                        maxSize: 8 * 1024 // 8kb, 小于这个值的转为base64
+                    }
+                }
+            },
+            {
+                test: /\.(eot|svg|ttf|woff|woff2)$/i,
+                type: 'asset/resource', // 替代webpack5之前的url-loader
+                generator: {
+                    filename: FONT_FILE_NAME,
+                }
             },
         ],
     },
@@ -73,7 +97,9 @@ module.exports = () => {
 
         const plugins = config.plugins ?? []
 
-        plugins.push(new MiniCssExtractPlugin())
+        plugins.push(new MiniCssExtractPlugin({
+            filename: CSS_FILE_NAME
+        }))
         plugins.push(new WorkboxWebpackPlugin.GenerateSW())
 
         config.plugins = plugins

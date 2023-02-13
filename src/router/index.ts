@@ -2,7 +2,8 @@ import {createRouter, createWebHistory, RouteRecordRaw} from 'vue-router'
 
 export const RouterName =  {
     base: 'base',
-    piniaDemo: 'pinia demo'
+    piniaDemo: 'pinia demo',
+    testImg: 'test img'
 } as const
 
 const routes: RouteRecordRaw[] = [
@@ -15,6 +16,11 @@ const routes: RouteRecordRaw[] = [
         name: RouterName.piniaDemo,
         path: '/pinia-demo',
         component: () => import(/* webpackChunkName: 'pinia-demo' */'../views/pinia-demo/index.vue')
+    },
+    {
+        name: RouterName.testImg,
+        path: '/pinia-demo',
+        component: () => import(/* webpackChunkName: 'test-img' */'../views/test-img/index.vue')
     },
     {
         path: '/',
