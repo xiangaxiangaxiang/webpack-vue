@@ -16,9 +16,6 @@ const JS_FILE_NAME = 'js/[name].[fullhash].js'
 const CSS_FILE_NAME = 'css/[name].[fullhash].css'
 const IMG_FILE_NAME = 'img/[name].[fullhash].[ext]'
 const FONT_FILE_NAME = 'font/[name].[fullhash].[ext]'
-const ASSET_FILE_NAME = 'asset/[name].[fullhash].[ext]'
-
-const RESOURCE_LIMIT = 10 * 1024 // url-loader所需参数，小于10K的文件资源转为base64
 
 const config = {
     entry: './src/main.ts',
