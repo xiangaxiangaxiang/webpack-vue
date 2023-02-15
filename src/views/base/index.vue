@@ -1,8 +1,8 @@
 <template>
     <div class="container">
-        <p>{{count}}</p>
-        <p>{{double}}</p>
-        <button @click="addOne">button</button>
+        <p>{{ count }}</p>
+        <p>{{ double }}</p>
+        <el-button @click="addOne">button</el-button>
         <test-tsx main-title="test tsx" />
         <p class="test-ellipsis ellipsis">
             hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh
@@ -11,11 +11,11 @@
 </template>
 
 <script lang="ts" setup>
-import {computed, ref} from 'vue'
+import { computed, ref } from 'vue'
 import TestTsx from 'src/components/test'
 
 const count = ref(0)
-const double = computed(() => count.value*2)
+const double = computed(() => count.value * 2)
 const addOne = () => count.value++
 </script>
 
@@ -26,7 +26,8 @@ const addOne = () => count.value++
     justify-content: center;
     align-items: center;
 
-    p, button {
+    p,
+    button {
         width: 200px;
         height: 50px;
         line-height: 50px;

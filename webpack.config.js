@@ -1,10 +1,12 @@
 // Generated using webpack-cli https://github.com/webpack/webpack-cli
 const VueLoaderPlugin = require('vue-loader').VueLoaderPlugin
-const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const WorkboxWebpackPlugin = require('workbox-webpack-plugin')
 const ESLintPlugin = require('eslint-webpack-plugin')
+const TerserPlugin = require('terser-webpack-plugin')
+const path = require('path')
+const {cpus} = require('os')
 const { resolve } = require('path')
 
 const isProduction = process.env.NODE_ENV == 'production'
@@ -100,10 +102,21 @@ const config = {
         extensions: ['.vue', '.tsx', '.ts', '.jsx', '.js'],
     },
     optimization: {
+        minimize: true,
+        minimizer: [
+            new TerserPlugin({
+                parallel: cpus().length, // 使用多进程并发运行以提高构建速度
+                extractComments: false, // 不保留注释
+                terserOptions: {
+                    compress: {
+                        drop_console: true // 去掉console相关函数
+                    }
+                }
+            })
+        ],
         splitChunks: {
             chunks: 'all',
-            minSize: 100 * 1024, // 生成 chunk 的最小体积, 单位bytes
-            maxSize: 0, // 告诉 webpack 尝试将大于 maxSize 个字节的 chunk 分割成较小的部分,
+            minSize: 10 * 1024, // 生成 chunk 的最小体积, 单位bytes
             minChunks: 1, // 拆分前必须共享模块的最小 chunks 数
             maxAsyncRequests: 50, // 按需加载时的最大并行请求数
             maxInitialRequests: 50, // 入口点的最大并行请求数
@@ -113,17 +126,17 @@ const config = {
                     test: /[\\/]node_modules[\\/]_?vue-router(.*)/,
                     filename: 'bundle/vue-router.js'
                 },
-                store: {
+                vue: {
+                    test: /[\\/]node_modules[\\/]_?(vue|@vue)(.*)/,
+                    filename: 'bundle/vue.js'
+                },
+                pinia: {
                     test: /[\\/]node_modules[\\/]_?pinia(.*)/,
                     filename: 'bundle/pinia.js'
                 },
                 element: {
-                    test: /[\\/]node_modules[\\/]_?@element-plus(.*)/,
+                    test: /[\\/]node_modules[\\/]_?(@element-plus|element-plus)(.*)/,
                     filename: 'bundle/element-plus.js'
-                },
-                vue: {
-                    test: /[\\/]node_modules[\\/]_?@vue(.*)/,
-                    filename: 'bundle/vue.js'
                 },
             }
         }
