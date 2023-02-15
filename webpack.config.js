@@ -19,6 +19,7 @@ const FONT_FILE_NAME = 'font/[name].[fullhash].[ext]'
 
 const config = {
     entry: './src/main.ts',
+    devtool: isProduction ? false : 'source-map',
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename: JS_FILE_NAME,
@@ -27,7 +28,19 @@ const config = {
     devServer: {
         open: true, // 自动打开浏览器
         host: 'localhost',
-        historyApiFallback: true
+        historyApiFallback: true, // vue-router使用history模式时需要开启这个，当404时自动使用index.html替代404页面
+        client: {
+            logging: 'error',
+            overlay: {
+                errors: true, // 出现错误时将错误输出到浏览器窗口
+                warnings: false
+            },
+            progress: true, //显示编译进度
+        },
+        //  接口代理
+        proxy: {
+            '/api': 'http://localhost:3000'
+        }
     },
     plugins: [
         new HtmlWebpackPlugin({
@@ -84,8 +97,37 @@ const config = {
         alias: {
             src: resolve(__dirname, './src')
         },
-        extensions: ['.tsx', '.ts', '.jsx', '.js', '...'],
+        extensions: ['.vue', '.tsx', '.ts', '.jsx', '.js'],
     },
+    optimization: {
+        splitChunks: {
+            chunks: 'all',
+            minSize: 100 * 1024, // 生成 chunk 的最小体积, 单位bytes
+            maxSize: 0, // 告诉 webpack 尝试将大于 maxSize 个字节的 chunk 分割成较小的部分,
+            minChunks: 1, // 拆分前必须共享模块的最小 chunks 数
+            maxAsyncRequests: 50, // 按需加载时的最大并行请求数
+            maxInitialRequests: 50, // 入口点的最大并行请求数
+            automaticNameDelimiter: '~',
+            cacheGroups: {
+                router: {
+                    test: /[\\/]node_modules[\\/]_?vue-router(.*)/,
+                    filename: 'bundle/vue-router.js'
+                },
+                store: {
+                    test: /[\\/]node_modules[\\/]_?pinia(.*)/,
+                    filename: 'bundle/pinia.js'
+                },
+                element: {
+                    test: /[\\/]node_modules[\\/]_?@element-plus(.*)/,
+                    filename: 'bundle/element-plus.js'
+                },
+                vue: {
+                    test: /[\\/]node_modules[\\/]_?@vue(.*)/,
+                    filename: 'bundle/vue.js'
+                },
+            }
+        }
+    }
 }
 
 module.exports = () => {
