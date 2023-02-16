@@ -1,8 +1,7 @@
-// Generated using webpack-cli https://github.com/webpack/webpack-cli
+
 const VueLoaderPlugin = require('vue-loader').VueLoaderPlugin
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const WorkboxWebpackPlugin = require('workbox-webpack-plugin')
 const ESLintPlugin = require('eslint-webpack-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
 const path = require('path')
@@ -14,10 +13,10 @@ const isProduction = process.env.NODE_ENV == 'production'
 const stylesHandler = isProduction ? MiniCssExtractPlugin.loader : 'style-loader'
 
 // 打包后文件路径和文件名
-const JS_FILE_NAME = 'js/[name].[fullhash].js'
-const CSS_FILE_NAME = 'css/[name].[fullhash].css'
-const IMG_FILE_NAME = 'img/[name].[fullhash].[ext]'
-const FONT_FILE_NAME = 'font/[name].[fullhash].[ext]'
+const JS_FILE_NAME = 'js/[name].[contenthash:8].js'
+const CSS_FILE_NAME = 'css/[name].[contenthash:8].css'
+const IMG_FILE_NAME = 'img/[name][ext]'
+const FONT_FILE_NAME = 'font/[name][ext]'
 
 const config = {
     entry: './src/main.ts',
@@ -102,18 +101,22 @@ const config = {
         extensions: ['.vue', '.tsx', '.ts', '.jsx', '.js'],
     },
     optimization: {
-        minimize: true,
-        minimizer: [
+        runtimeChunk: true,
+        minimize: isProduction,
+        minimizer: isProduction ? [
             new TerserPlugin({
                 parallel: cpus().length, // 使用多进程并发运行以提高构建速度
-                extractComments: false, // 不保留注释
+                extractComments: false, // 不剥离注释 （/^\**!|@preserve|@license|@cc_on/i）
                 terserOptions: {
                     compress: {
                         drop_console: true // 去掉console相关函数
+                    },
+                    format: {
+                        comments: false // 去掉注释
                     }
                 }
             })
-        ],
+        ] : [],
         splitChunks: {
             chunks: 'all',
             minSize: 10 * 1024, // 生成 chunk 的最小体积, 单位bytes
@@ -124,22 +127,32 @@ const config = {
             cacheGroups: {
                 router: {
                     test: /[\\/]node_modules[\\/]_?vue-router(.*)/,
+                    priority: 20,
                     filename: 'bundle/vue-router.js'
                 },
                 vue: {
                     test: /[\\/]node_modules[\\/]_?(vue|@vue)(.*)/,
+                    priority: 20,
                     filename: 'bundle/vue.js'
                 },
                 pinia: {
                     test: /[\\/]node_modules[\\/]_?pinia(.*)/,
+                    priority: 20,
                     filename: 'bundle/pinia.js'
                 },
                 element: {
                     test: /[\\/]node_modules[\\/]_?(@element-plus|element-plus)(.*)/,
+                    priority: 40,
                     filename: 'bundle/element-plus.js'
                 },
+                vendors: {
+                    test: /[\\/]node_modules[\\/]/,
+                    filename: 'bundle/common-vendors.js'
+                },
             }
-        }
+        },
+        moduleIds: 'named',
+        chunkIds: 'named',
     }
 }
 
@@ -152,7 +165,6 @@ module.exports = () => {
         plugins.push(new MiniCssExtractPlugin({
             filename: CSS_FILE_NAME
         }))
-        plugins.push(new WorkboxWebpackPlugin.GenerateSW())
 
         config.plugins = plugins
 
