@@ -5,7 +5,6 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const ESLintPlugin = require('eslint-webpack-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
 const SpeedMeasurePlugin = require('speed-measure-webpack-plugin')
-const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 const path = require('path')
 const {cpus} = require('os')
 const { resolve } = require('path')
@@ -74,22 +73,6 @@ const config = {
         }),
         new VueLoaderPlugin(), // 必须要加这个才能解析SFC
         new ESLintPlugin(),
-        new ForkTsCheckerWebpackPlugin({
-            typescript: {
-                diagnosticOptions: {
-                    semantic: true,
-                    syntactic: true,
-                },
-                mode: 'write-references',
-                // vue专用
-                extensions: {
-                    vue: {
-                        enabled: true,
-                        compiler: '@vue/compiler-sfc'
-                    }
-                },
-            }
-        }),
     ],
     module: {
         rules: [
