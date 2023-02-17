@@ -4,13 +4,34 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const ESLintPlugin = require('eslint-webpack-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
+const SpeedMeasurePlugin = require('speed-measure-webpack-plugin')
 const path = require('path')
 const {cpus} = require('os')
 const { resolve } = require('path')
 
 const isProduction = process.env.NODE_ENV == 'production'
 
+// 不同环境使用不同配置，也可以分别创建webpack.prod.config.js和webpack.dev.confog.js分别配置
 const stylesHandler = isProduction ? MiniCssExtractPlugin.loader : 'style-loader'
+const sourceMap = isProduction ? false : 'source-map'
+const moduleIds = isProduction ? 'deterministic' : 'named'
+const chunkIds = isProduction ? 'deterministic' : 'named'
+const minimizer = isProduction
+    ? [
+        new TerserPlugin({
+            parallel: cpus().length, // 使用多进程并发运行以提高构建速度
+            extractComments: false, // 不剥离注释 （/^\**!|@preserve|@license|@cc_on/i）
+            terserOptions: {
+                compress: {
+                    drop_console: true // 去掉console相关函数
+                },
+                format: {
+                    comments: false // 去掉注释
+                }
+            }
+        })
+    ]
+    : []
 
 // 打包后文件路径和文件名
 const JS_FILE_NAME = 'js/[name].[contenthash:8].js'
@@ -18,10 +39,13 @@ const CSS_FILE_NAME = 'css/[name].[contenthash:8].css'
 const IMG_FILE_NAME = 'img/[name][ext]'
 const FONT_FILE_NAME = 'font/[name][ext]'
 
+
+
 const config = {
     entry: './src/main.ts',
-    devtool: isProduction ? false : 'source-map',
+    devtool: sourceMap,
     output: {
+        pathinfo: false,
         path: path.resolve(__dirname, 'dist'),
         filename: JS_FILE_NAME,
         clean: true // 打包之前清空输出目录
@@ -54,15 +78,19 @@ const config = {
         rules: [
             {
                 test: /\.vue$/,
-                loader: 'vue-loader',
-                options: {
-                    reactivityTransform: true
-                }
+                use: [
+                    'thread-loader',
+                    {
+                        loader: 'vue-loader',
+                        options: {
+                            reactivityTransform: true
+                        }
+                    }
+                ]
             },
             {
                 test: /\.(ts|tsx)$/i,
-                loader: 'babel-loader',
-                options: {},
+                use: ['thread-loader', 'babel-loader'],
                 exclude: ['/node_modules/'],
             },
             {
@@ -103,20 +131,7 @@ const config = {
     optimization: {
         runtimeChunk: true,
         minimize: isProduction,
-        minimizer: isProduction ? [
-            new TerserPlugin({
-                parallel: cpus().length, // 使用多进程并发运行以提高构建速度
-                extractComments: false, // 不剥离注释 （/^\**!|@preserve|@license|@cc_on/i）
-                terserOptions: {
-                    compress: {
-                        drop_console: true // 去掉console相关函数
-                    },
-                    format: {
-                        comments: false // 去掉注释
-                    }
-                }
-            })
-        ] : [],
+        minimizer,
         splitChunks: {
             chunks: 'all',
             minSize: 10 * 1024, // 生成 chunk 的最小体积, 单位bytes
@@ -151,8 +166,8 @@ const config = {
                 },
             }
         },
-        moduleIds: 'named',
-        chunkIds: 'named',
+        moduleIds,
+        chunkIds,
     }
 }
 
@@ -162,9 +177,12 @@ module.exports = () => {
 
         const plugins = config.plugins ?? []
 
-        plugins.push(new MiniCssExtractPlugin({
-            filename: CSS_FILE_NAME
-        }))
+        plugins.push(
+            new MiniCssExtractPlugin({
+                filename: CSS_FILE_NAME
+            }),
+            new SpeedMeasurePlugin() // 输出各loader、plugin打包用时，可以针对性优化
+        )
 
         config.plugins = plugins
 
