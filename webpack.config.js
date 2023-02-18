@@ -129,7 +129,6 @@ const config = {
         extensions: ['.vue', '.tsx', '.ts', '.jsx', '.js'],
     },
     optimization: {
-        runtimeChunk: true,
         minimize: isProduction,
         minimizer,
         moduleIds,
