@@ -9,8 +9,23 @@ module.exports = {
         'plugin:vue/vue3-essential',
         'plugin:@typescript-eslint/recommended'
     ],
-    'overrides': [
+    overrides: [
+        {
+            files: ['**/__tests__/**/*.js', '**/__tests__/**/*.ts'],
+            env: {
+                jest: true
+            },
+            rules: {
+                'node/no-extraneous-require': 'off'
+            }
+        }
     ],
+    globals: {
+        defineProps: 'readonly',
+        defineEmits: 'readonly',
+        defineExpose: 'readonly',
+        withDefaults: 'readonly',
+    },
     'parser': 'vue-eslint-parser',
     'parserOptions': {
         'ecmaVersion': 'latest',
