@@ -12,9 +12,9 @@
     "eslint:fix": "npx eslint ./src --ext .vue,.js,.ts --fix",
     "stylelint": "npx stylelint \"src/**/*.vue\" \"src/**/*.less\"",
     "stylelint:fix": "npx stylelint --fix \"src/**/*.vue\" \"src/**/*.less\"",
-    "pre-commit": "npm run ts-check && lint-staged",
+    "pre-commit": "npm run ts-check && npm run test && lint-staged",
     "prepare": "husky install",
-    "test": "jest"
+    "test": "jest -o"
   },
   "devDependencies": {
     "@babel/core": "^7.20.12",
