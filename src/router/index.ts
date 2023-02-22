@@ -4,7 +4,8 @@ export const RouterName =  {
     base: 'base',
     piniaDemo: 'pinia demo',
     testImg: 'test img',
-    treeShaking: 'tree shaking'
+    treeShaking: 'tree shaking',
+    test: 'test'
 } as const
 
 const routes: RouteRecordRaw[] = [
@@ -27,6 +28,11 @@ const routes: RouteRecordRaw[] = [
         name: RouterName.treeShaking,
         path: '/tree-shaking',
         component: () => import(/* webpackChunkName: 'tree-shaking' */'../views/tree-shaking/index.vue')
+    },
+    {
+        name: RouterName.test,
+        path: '/test',
+        component: () => import(/* webpackChunkName: 'test' */'../views/test/index.vue')
     },
     {
         path: '/',

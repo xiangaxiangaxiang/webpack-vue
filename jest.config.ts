@@ -8,5 +8,16 @@ export default {
     ],
     testEnvironmentOptions: {
         customExportConditions: ['node', 'node-addons'],
+    },
+    moduleFileExtensions: [
+        'js',
+        'ts',
+        'jsx',
+        'tsx',
+        'vue'
+    ],
+    transform: {
+        '^.+\\.vue$': '@vue/vue3-jest',
+        '\\.[jt]sx?$': 'babel-jest'
     }
 }

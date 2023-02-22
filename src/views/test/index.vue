@@ -1,11 +1,13 @@
 <template>
     <div>
-        {{ msg }}
+        <p>Times clicked: {{ count }}</p>
+        <button @click="increment">increment</button>
     </div>
 </template>
 
 <script setup lang="ts">
-import {toRefs} from 'vue'
-const props = defineProps<{msg: string}>()
-const {msg} = toRefs(props)
+import { ref } from 'vue'
+
+const count = ref(0)
+const increment = () => count.value++
 </script>
