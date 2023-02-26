@@ -64,10 +64,6 @@
     "webpack-cli": "^5.0.1",
     "webpack-dev-server": "^4.11.1"
   },
-  "sideEffects": [
-    "*.css",
-    "*.less"
-  ],
   "dependencies": {
     "@element-plus/icons-vue": "^2.0.10",
     "element-plus": "^2.2.30",
@@ -75,6 +71,10 @@
     "vue": "^3.2.45",
     "vue-router": "^4.1.6"
   },
+  "sideEffects": [
+    "*.css",
+    "*.less"
+  ],
   "lint-staged": {
     "*.{js,ts,vue}": [
       "npx eslint --fix"

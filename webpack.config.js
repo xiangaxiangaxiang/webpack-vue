@@ -83,7 +83,7 @@ const config = {
                     {
                         loader: 'vue-loader',
                         options: {
-                            reactivityTransform: true
+                            reactivityTransform: true // 开启响应式语法糖
                         }
                     }
                 ]

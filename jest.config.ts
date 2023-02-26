@@ -17,7 +17,7 @@ export default {
         'vue'
     ],
     transform: {
-        '^.+\\.vue$': '@vue/vue3-jest',
-        '\\.[jt]sx?$': 'babel-jest'
+        '^.+\\.vue$': '@vue/vue3-jest', // 解析vue组件
+        '\\.[jt]sx?$': 'babel-jest' // 解析tsx
     }
 }

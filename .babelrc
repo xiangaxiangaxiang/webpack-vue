@@ -9,5 +9,5 @@
             }
         ]
     ],
-    "plugins": ["@vue/babel-plugin-jsx"]
+    "plugins": ["@vue/babel-plugin-jsx"] // 支持tsx
 }
